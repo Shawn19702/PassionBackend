@@ -18,11 +18,18 @@ public interface ImageRepository extends CrudRepository<Image, Long> {
 
     @Query("SELECT c FROM Image c WHERE c.ultraresoulution = true")
     Iterable<Image> findAllEnabled();
+    @Query("SELECT c FROM Image c WHERE c.ultraresoulution = false")
+    Iterable<Image> findByEnabledFalse();
 
-@Modifying
+    @Modifying
     @Query(value = "ALTER TABLE Image AUTO_INCREMENT = 1", nativeQuery = true)
-@Transactional
-void alterImageAutoincrement();
+    @Transactional
+    void alterImageAutoincrement();
+
+   // In the declarative approach,
+    // we annotate the methods with the @Transactional annotation.
+    // The @Transactional annotation makes use of the attributes rollbackFor
+    // or rollbackForClassName to rollback the transactions
 
 
 }

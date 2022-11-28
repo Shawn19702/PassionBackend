@@ -45,4 +45,9 @@ public class ImageController {
         return imageService.findAllUltraresoulutionWallpapers();
     }
 
+    @GetMapping("/image/regular-quality")
+    public ResponseEntity<?> findAllRegularQuality(){
+        return imageService.findAllRegularQualityWallpapers();
+    }
+
     }

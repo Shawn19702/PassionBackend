@@ -50,6 +50,7 @@ public class ImageService {
     private long nextLong(long lowerRange, long upperRange) {
 
         return (long) ((RANDOMIZER.nextDouble() * (upperRange - lowerRange)) + lowerRange);
+
     }
 
     public ResponseEntity<?> searchColors(String query) {
@@ -79,6 +80,13 @@ public class ImageService {
             throw new ResourceNotFoundException("No Wallpapers with 4k Found");
         }
         return ResponseHandler.generateResponse("All Wallpapers Found With 4K!", HttpStatus.OK, images);
+    }
+    public ResponseEntity<?> findAllRegularQualityWallpapers() {
+        List<Image> images = (List<Image>) imageRepository.findByEnabledFalse();
+        if (images.isEmpty()) {
+            throw new ResourceNotFoundException("No Wallpapers with 4k Found");
+        }
+        return ResponseHandler.generateResponse("All Wallpapers Found With Regular Quality!", HttpStatus.OK, images);
     }
 }
 
