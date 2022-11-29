@@ -19,4 +19,15 @@ public class ResponseHandler {
 
         return new ResponseEntity<Object>(map,code);
     }
+    public static ResponseEntity<Object> generateResponseNoObj(String message, HttpStatus code) {
+
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("code", code.value());
+        map.put("message", message);
+
+
+
+
+        return new ResponseEntity<Object>(map,code);
+    }
 }

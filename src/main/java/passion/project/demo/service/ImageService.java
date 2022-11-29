@@ -50,7 +50,9 @@ public class ImageService {
     private long nextLong(long lowerRange, long upperRange) {
 
         return (long) ((RANDOMIZER.nextDouble() * (upperRange - lowerRange)) + lowerRange);
+        // 8                             50 - 1
 
+// finding the random number                      // in the range of 1 and repository.count       1               1
     }
 
     public ResponseEntity<?> searchColors(String query) {
@@ -81,12 +83,50 @@ public class ImageService {
         }
         return ResponseHandler.generateResponse("All Wallpapers Found With 4K!", HttpStatus.OK, images);
     }
+
     public ResponseEntity<?> findAllRegularQualityWallpapers() {
         List<Image> images = (List<Image>) imageRepository.findByEnabledFalse();
         if (images.isEmpty()) {
             throw new ResourceNotFoundException("No Wallpapers with 4k Found");
         }
         return ResponseHandler.generateResponse("All Wallpapers Found With Regular Quality!", HttpStatus.OK, images);
+    }
+
+    public ResponseEntity<?> createImaage(Image image) {
+        Image image1 = imageRepository.save(image);
+        if (image.getUltraresoulution() == null){
+            throw new ResourceNotFoundException("Wallpaper Ultraresoulution must be true or false");
+        }else if (image.getImage() == null){
+            throw new ResourceNotFoundException("Wallpaper must have url");
+        }else if (image.getColor() == null){
+            throw new ResourceNotFoundException("Wallpaper must have a color");
+        }else if (image.getDescription() == null){
+            throw new ResourceNotFoundException("Wallpaper must have a description");
+        }
+        return ResponseHandler.generateResponse("All Wallpapers Found With Regular Quality!", HttpStatus.OK, image1);
+
+    }
+    public ResponseEntity<?> updateImage(Image image, Long id) {
+        Optional<Image> image1 = imageRepository.findById(id);
+        if (image1.isEmpty()){
+            throw new ResourceNotFoundException("Cant find id");
+        }
+        else  {
+            imageRepository.save(image);
+        }
+        return ResponseHandler.generateResponse("Updated Wallpaper!", HttpStatus.OK, image1);
+
+    }
+    public ResponseEntity<?> deleteImage(Image image, Long id) {
+        Optional<Image> image1 = imageRepository.findById(id);
+        if (image1.isEmpty()){
+            throw new ResourceNotFoundException("Cant find id");
+        }
+        else  {
+            imageRepository.deleteById(id);
+        }
+        return ResponseHandler.generateResponseNoObj("deleted Wallpaper!", HttpStatus.OK);
+
     }
 }
 
