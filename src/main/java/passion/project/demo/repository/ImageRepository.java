@@ -1,5 +1,6 @@
 package passion.project.demo.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -9,7 +10,7 @@ import passion.project.demo.model.Image;
 import javax.transaction.Transactional;
 
 @Repository
-public interface ImageRepository extends CrudRepository<Image, Long> {
+public interface ImageRepository extends JpaRepository<Image, Long> {
     @Query(value = "Select * From Image WHERE color LIKE CONCAT('%', :query, '%')", nativeQuery = true)
     Iterable<Image> findByColorContaining(String query);
 
@@ -21,10 +22,16 @@ public interface ImageRepository extends CrudRepository<Image, Long> {
     @Query("SELECT c FROM Image c WHERE c.ultraresoulution = false")
     Iterable<Image> findByEnabledFalse();
 
-    @Modifying
-    @Query(value = "ALTER TABLE Image AUTO_INCREMENT = 1", nativeQuery = true)
-    @Transactional
-    void alterImageAutoincrement();
+
+
+
+
+
+//
+//    @Modifying
+//    @Query(value = "ALTER TABLE Image AUTO_INCREMENT = 1", nativeQuery = true)
+//    @Transactional
+//    void alterImageAutoincrement();
 
    // In the declarative approach,
     // we annotate the methods with the @Transactional annotation.

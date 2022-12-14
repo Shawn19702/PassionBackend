@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import passion.project.demo.model.Image;
+import passion.project.demo.repository.AuthorRepository;
 import passion.project.demo.repository.ImageRepository;
 import passion.project.demo.responsehandler.ResponseHandler;
 
@@ -13,38 +14,88 @@ import java.util.*;
 
 @Service
 public class ImageService {
+   // INSERT INTO image(id, image, description, ultraresoulution, colors)
+//   VALUES((1, ''), ('city'), ('a', TRUE),('{"blue", "red"}') );
+
+
+
 
     @Autowired
     private ImageRepository imageRepository;
 
+    @Autowired
+    private AuthorRepository authorRepository;
+
+
+
+    public ResponseEntity<?> createImage(Long authorid, Image image)  {
+         return authorRepository.findById(authorid).map(author -> {
+            image.setAuthor(author);
+             imageRepository.save(image);
+             return ResponseHandler.generateResponse("Author added!", HttpStatus.OK ,image );
+
+        }).orElseThrow(() -> new ResourceNotFoundException("categoryid " + authorid + " not found"));
+
+    }
+
+
+
+    public ResponseEntity<?> getAllimages() {
+
+         List<Image> images = (List<Image>) imageRepository.findAll();
+         if (images.isEmpty()){
+             throw new ResourceNotFoundException("No images exist!");
+         }
+        return ResponseHandler.generateResponse("Got all images!", HttpStatus.OK ,images );
+
+    }
+
+    public ResponseEntity<?> getImage(Long id) {
+        Optional<Image> image = imageRepository.findById(id);
+if (image.isEmpty()){
+    throw new ResourceNotFoundException("image id not found");
+}
+        return ResponseHandler.generateResponse("got image!", HttpStatus.OK ,image);
+    }
+
+
+
+    public ResponseEntity<?> updateImage(Long author_id, Image image)  {
+        return authorRepository.findById(author_id).map(author -> {
+            image.setAuthor(author);
+            imageRepository.save(image);
+            return ResponseHandler.generateResponse("got image!", HttpStatus.OK ,image );
+
+        }).orElseThrow(() -> new ResourceNotFoundException("authorid " + author_id + " not found"));
+
+    }
+
+    public ResponseEntity<?> deleteImage(Long imageid){
+        Optional <Image> image  = imageRepository.findById(imageid);
+        if (image.isEmpty()) {
+            throw new ResourceNotFoundException("Error deleting image");
+        }else {
+            imageRepository.deleteById(imageid);
+        }
+        return ResponseHandler.generateResponseNoObj("Image has been deleted", HttpStatus.OK);
+    }
+
+//    public Iterable<Image> findCategorybyId(Long categoryId){
+//        return imageRepository.findBooksByCategoryId(categoryId);
+//    }
+
+
 
     private final static Random RANDOMIZER = new Random();
 
-    public ResponseEntity<?> getAll() {
-        List<Image> images = (List<Image>) imageRepository.findAll();
-        if (images.isEmpty()) {
-            throw new ResourceNotFoundException("No wallpapers available");
-        }
-        return ResponseHandler.generateResponse("Here's all of our wallpapers!", HttpStatus.OK, images);
-
-    }
-
-    //
-    public ResponseEntity<?> getOne(Long id) {
-        Optional<Image> image = imageRepository.findById(id);
-        if (image.isEmpty()) {
-            throw new ResourceNotFoundException("Image Id doesn't exist");
-        }
-        return ResponseHandler.generateResponse("Here's your wallpaper!", HttpStatus.OK, image);
-    }
 
 
-    public ResponseEntity<?> getRandomOne() {
+    public ResponseEntity<?> getRandomOne(Long authorid) {
         Optional<Image> image = imageRepository.findById(nextLong(1, imageRepository.count() + 1));
         if (image.isEmpty()) {
             throw new ResourceNotFoundException("No wallpapers available");
         }
-        return ResponseHandler.generateResponse("Here's your wallpaper!", HttpStatus.OK, image);
+        return ResponseHandler.generateResponse("Wallpapers Found by Your Requested Color!", HttpStatus.OK, image);
     }
 
     private long nextLong(long lowerRange, long upperRange) {
@@ -92,42 +143,8 @@ public class ImageService {
         return ResponseHandler.generateResponse("All Wallpapers Found With Regular Quality!", HttpStatus.OK, images);
     }
 
-    public ResponseEntity<?> createImaage(Image image) {
-        Image image1 = imageRepository.save(image);
-        if (image.getUltraresoulution() == null){
-            throw new ResourceNotFoundException("Wallpaper Ultraresoulution must be true or false");
-        }else if (image.getImage() == null){
-            throw new ResourceNotFoundException("Wallpaper must have url");
-        }else if (image.getColor() == null){
-            throw new ResourceNotFoundException("Wallpaper must have a color");
-        }else if (image.getDescription() == null){
-            throw new ResourceNotFoundException("Wallpaper must have a description");
-        }
-        return ResponseHandler.generateResponse("All Wallpapers Found With Regular Quality!", HttpStatus.OK, image1);
 
-    }
-    public ResponseEntity<?> updateImage(Image image, Long id) {
-        Optional<Image> image1 = imageRepository.findById(id);
-        if (image1.isEmpty()){
-            throw new ResourceNotFoundException("Cant find id");
-        }
-        else  {
-            imageRepository.save(image);
-        }
-        return ResponseHandler.generateResponse("Updated Wallpaper!", HttpStatus.OK, image1);
 
-    }
-    public ResponseEntity<?> deleteImage(Image image, Long id) {
-        Optional<Image> image1 = imageRepository.findById(id);
-        if (image1.isEmpty()){
-            throw new ResourceNotFoundException("Cant find id");
-        }
-        else  {
-            imageRepository.deleteById(id);
-        }
-        return ResponseHandler.generateResponseNoObj("deleted Wallpaper!", HttpStatus.OK);
-
-    }
 }
 
 

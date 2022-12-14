@@ -1,6 +1,10 @@
 package passion.project.demo.model;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Set;
 
@@ -10,22 +14,32 @@ public class Image {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
+    @Lob
+    @Column(name = "image", length = 999999999)
     private String  image;
 
     private String description;
 
     private Boolean ultraresoulution;
 
-    private String [] color;
+    private ArrayList<String> colors;
 
-    public Image() {
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
+    @JoinColumn(name = "author_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    // @JsonIgnore
+
+    private Author author;
+
+    public Author getAuthor() {
+        return author;
     }
 
-    public Image(String image, String description, Boolean ultraresoulution, String[] color) {
-        this.image = image;
-        this.description = description;
-        this.ultraresoulution = ultraresoulution;
-        this.color = color;
+    public void setAuthor(Author author) {
+        this.author = author;
+    }
+
+    public Image() {
     }
 
     public Long getId() {
@@ -60,21 +74,23 @@ public class Image {
         this.ultraresoulution = ultraresoulution;
     }
 
-    public String[] getColor() {
-        return color;
+    public ArrayList<String> getColors() {
+        return colors;
     }
 
-    public void setColor(String[] color) {
-        this.color = color;
+    public void setColors(ArrayList<String> colors) {
+        this.colors = colors;
     }
 
     @Override
     public String toString() {
         return "Image{" +
-                "image='" + image + '\'' +
+                "id=" + id +
+                ", image='" + image + '\'' +
                 ", description='" + description + '\'' +
                 ", ultraresoulution=" + ultraresoulution +
-                ", color=" + Arrays.toString(color) +
+                ", colors=" + colors +
+                ", author=" + author +
                 '}';
     }
 }
