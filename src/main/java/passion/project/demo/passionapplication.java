@@ -8,7 +8,7 @@ public class passionapplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(passionapplication.class, args);
-
+/// jjj
 	}
 
 }
