@@ -42,7 +42,7 @@ public class ImageService {
 
     public ResponseEntity<?> getAllimages() {
 
-         List<Image> images = (List<Image>) imageRepository.findAll();
+        List<Image> images = (List<Image>) imageRepository.findAll();
          if (images.isEmpty()){
              throw new ResourceNotFoundException("No images exist!");
          }

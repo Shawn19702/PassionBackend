@@ -12,7 +12,7 @@ public class Author {
     @Column(name = "id", nullable = false)
     private Long id;
 
-    private String name;
+    private String source;
 
 
     public Long getId() {
@@ -27,15 +27,19 @@ public class Author {
     }
 
 
-    public String getName() {
-        return name;
+    public String getSource() {
+        return source;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setSource(String source) {
+        this.source = source;
     }
 
-
-
-
+    @Override
+    public String toString() {
+        return "Author{" +
+                "id=" + id +
+                ", source='" + source + '\'' +
+                '}';
+    }
 }
